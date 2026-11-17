@@ -1,0 +1,425 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>مختبر اسم المفعول</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Kufi+Arabic:wght@500;700;800&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap">
+<style>
+/* Layout: a single study column; sticky tab bar; each tab is one activity (learn → lab → identify → check → quiz) */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --ink:#18263a; --muted:#5a6878; --line:#d9e0e8;
+  --accent:#1d5c8f; --accent-soft:#e3eef8; --hl:#c76a12; --hl-soft:#fbeedf;
+  --ok:#1e7a46; --ok-soft:#e1f3e8; --bad:#b3261e; --bad-soft:#fbe6e4;
+  --f-display:"Noto Kufi Arabic", "Segoe UI", Tahoma, sans-serif;
+  --f-body:"Noto Naskh Arabic", "Traditional Arabic", Tahoma, serif;
+  --f-quran:"Amiri", "Traditional Arabic", serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1620; --surface:#17212e; --ink:#e6edf5; --muted:#9aa9ba; --line:#2a3646;
+  --accent:#6fb0e6; --accent-soft:#1b3047; --hl:#f0a453; --hl-soft:#3a2a17;
+  --ok:#5fd08f; --ok-soft:#173326; --bad:#f2837a; --bad-soft:#3b1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1620; --surface:#17212e; --ink:#e6edf5; --muted:#9aa9ba; --line:#2a3646;
+  --accent:#6fb0e6; --accent-soft:#1b3047; --hl:#f0a453; --hl-soft:#3a2a17;
+  --ok:#5fd08f; --ok-soft:#173326; --bad:#f2837a; --bad-soft:#3b1d1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.85;direction:rtl}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;padding-block:8px 16px}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,5vw,36px);margin:0;line-height:1.4;text-wrap:balance}
+h1 span{color:var(--accent)}
+.sub{color:var(--muted);margin:0;font-size:16px}
+.score-pill{font-family:var(--f-display);font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;white-space:nowrap}
+.score-pill b{color:var(--accent);font-variant-numeric:tabular-nums}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding-block:8px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+nav.tabs button{font-family:var(--f-display);font-size:15px;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px}
+nav.tabs button .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px}
+nav.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+nav.tabs button[aria-selected="true"] .n{background:var(--surface);color:var(--accent)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+section.panel{padding-top:22px;display:grid;gap:18px}
+h2{font-family:var(--f-display);font-size:22px;margin:0;line-height:1.5}
+h3{font-family:var(--f-display);font-size:17px;margin:0 0 6px;color:var(--accent)}
+p{margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.rule{background:var(--accent-soft);border-inline-start:4px solid var(--accent);border-radius:10px;padding:14px 16px;font-weight:600}
+mark{background:var(--hl-soft);color:var(--hl);font-weight:700;padding:0 3px;border-radius:4px}
+.quran{font-family:var(--f-quran);font-size:22px}
+.sub-tabs{display:flex;flex-wrap:wrap;gap:8px}
+.sub-tabs button{font-family:var(--f-display);font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.sub-tabs button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:17px;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:right}
+th{font-family:var(--f-display);font-size:14px;color:var(--muted);font-weight:700}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.compare > div{border-radius:12px;padding:14px;border:1px solid var(--line)}
+.compare .f{background:var(--surface)}
+.compare .m{background:var(--hl-soft);border-color:transparent}
+.compare .big{font-family:var(--f-display);font-size:26px;font-weight:800}
+@media (max-width:520px){.compare{grid-template-columns:1fr}}
+/* lab */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-body);font-size:19px;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:4px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--hl);background:var(--hl-soft);color:var(--hl)}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;animation:in .35s ease both}
+.steps li::before{content:counter(s);font-family:var(--f-display);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--surface);font-size:14px;margin-top:4px}
+.result{font-family:var(--f-display);font-size:32px;font-weight:800;color:var(--hl);text-align:center;padding:10px;border:2px dashed var(--hl);border-radius:12px}
+.tag{display:inline-block;font-family:var(--f-display);font-size:12px;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:2px 8px;margin-inline-start:6px}
+@keyframes in{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* exercises */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--f-display);font-size:14px;color:var(--muted)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;flex:1;min-width:120px}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.sentence{font-size:24px;line-height:2.3;display:flex;flex-wrap:wrap;gap:6px 4px}
+.word{font:inherit;border:1px solid transparent;background:transparent;color:var(--ink);border-radius:8px;padding:0 6px;cursor:pointer}
+.word:hover{background:var(--accent-soft)}
+.word.ok{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.word.bad{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.opts{grid-template-columns:1fr}}
+.opt{font-family:var(--f-body);font-size:19px;text-align:right;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{border-radius:10px;padding:10px 14px;font-weight:600}
+.fb.ok{background:var(--ok-soft);color:var(--ok)}
+.fb.bad{background:var(--bad-soft);color:var(--bad)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font-family:var(--f-display);font-size:15px;font-weight:700;border:none;background:var(--accent);color:var(--surface);border-radius:10px;padding:10px 18px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+input.ans{font-family:var(--f-body);font-size:22px;font-weight:700;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:6px 14px;width:min(240px,100%)}
+.verb-big{font-family:var(--f-display);font-size:40px;font-weight:800;color:var(--accent);line-height:1.5}
+.final{text-align:center;display:grid;gap:10px;justify-items:center}
+.ring{width:150px;height:150px}
+.grade{font-family:var(--f-display);font-size:22px;font-weight:800}
+.review{text-align:right;width:100%;display:grid;gap:8px}
+.review div{border-radius:10px;padding:8px 12px;font-size:16px}
+.review .ok{background:var(--ok-soft)} .review .bad{background:var(--bad-soft)}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.summary .card{padding:12px 14px}
+.summary .k{font-family:var(--f-display);font-size:13px;color:var(--muted)}
+.summary .v{font-family:var(--f-display);font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.note{color:var(--muted);font-size:15px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>اسم <span>المفعول</span></h1>
+      <p class="sub">قواعد اللغة العربية · الثالث المتوسط · شرح، تدريب، فحص، واختبار</p>
+    </div>
+    <div class="score-pill">مجموع النقاط: <b id="totalPts">0</b></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="أقسام البرنامج">
+    <button role="tab" data-tab="learn" aria-selected="true"><span class="n">١</span>الشرح</button>
+    <button role="tab" data-tab="lab" aria-selected="false"><span class="n">٢</span>مختبر الصياغة</button>
+    <button role="tab" data-tab="spot" aria-selected="false"><span class="n">٣</span>استخرج</button>
+    <button role="tab" data-tab="check" aria-selected="false"><span class="n">٤</span>الفحص الكتابي</button>
+    <button role="tab" data-tab="quiz" aria-selected="false"><span class="n">٥</span>الاختبار</button>
+    <button role="tab" data-tab="report" aria-selected="false"><span class="n">٦</span>النتيجة</button>
+  </nav>
+
+  <!-- 1 LEARN -->
+  <section class="panel" id="learn">
+    <h2>ما اسم المفعول؟</h2>
+    <div class="rule">اسم المفعول: اسمٌ مشتقٌّ من الفعل المتعدّي المبنيّ للمجهول، يدلّ على مَن وقع عليه الفعل.</div>
+    <div class="compare">
+      <div class="f"><h3>اسم الفاعل</h3><div class="big">كاتِب</div><p>مَن قام بالكتابة</p></div>
+      <div class="m"><h3>اسم المفعول</h3><div class="big">مكتوب</div><p>ما وقعت عليه الكتابة</p></div>
+    </div>
+    <div class="sub-tabs" role="group" aria-label="محاور الشرح">
+      <button data-sub="s1" aria-pressed="true">من الثلاثي</button>
+      <button data-sub="s2" aria-pressed="false">الأجوف والناقص</button>
+      <button data-sub="s3" aria-pressed="false">من غير الثلاثي</button>
+      <button data-sub="s4" aria-pressed="false">عمله</button>
+    </div>
+    <div class="card sub-panel" id="s1">
+      <h3>من الفعل الثلاثي الصحيح</h3>
+      <p>يُصاغ على وزن <mark>مَفْعُول</mark>.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>الفعل</th><th>اسم المفعول</th><th>في جملة</th></tr>
+        <tr><td>كَتَبَ</td><td><mark>مكتوب</mark></td><td>الدرسُ مكتوبٌ على السبورة</td></tr>
+        <tr><td>طَلَبَ</td><td><mark>مطلوب</mark></td><td>العلمُ مطلوبٌ من المهد إلى اللحد</td></tr>
+        <tr><td>نَصَرَ</td><td><mark>منصور</mark></td><td>الحقُّ منصورٌ</td></tr>
+        <tr><td>قَرَأَ</td><td><mark>مقروء</mark></td><td>الكتابُ مقروءٌ</td></tr>
+      </table></div>
+      <p class="quran" style="margin-top:10px">﴿وَكَانَ أَمْرُ اللَّهِ <mark>مَفْعُولًا</mark>﴾</p>
+    </div>
+    <div class="card sub-panel" id="s2" hidden>
+      <h3>من الأجوف (وسطه حرف علّة)</h3>
+      <p>نحذف إحدى الواوين: أصل (مقول) <b>مَقْوُوْل</b>، وأصل (مبيع) <b>مَبْيُوْع</b>.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>الفعل</th><th>نوعه</th><th>اسم المفعول</th></tr>
+        <tr><td>قالَ</td><td>أجوف واوي</td><td><mark>مَقُول</mark></td></tr>
+        <tr><td>صانَ</td><td>أجوف واوي</td><td><mark>مَصُون</mark></td></tr>
+        <tr><td>باعَ</td><td>أجوف يائي</td><td><mark>مَبِيع</mark></td></tr>
+        <tr><td>كالَ</td><td>أجوف يائي</td><td><mark>مَكِيل</mark></td></tr>
+      </table></div>
+      <h3 style="margin-top:14px">من الناقص (آخره حرف علّة)</h3>
+      <p>في الواوي تُدغَم الواوان، وفي اليائي تُقلب الواو ياءً وتُدغَم في الياء.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>الفعل</th><th>نوعه</th><th>اسم المفعول</th></tr>
+        <tr><td>دَعا</td><td>ناقص واوي</td><td><mark>مَدْعُوّ</mark></td></tr>
+        <tr><td>رَجا</td><td>ناقص واوي</td><td><mark>مَرْجُوّ</mark></td></tr>
+        <tr><td>رَمى</td><td>ناقص يائي</td><td><mark>مَرْمِيّ</mark></td></tr>
+        <tr><td>هَدى</td><td>ناقص يائي</td><td><mark>مَهْدِيّ</mark></td></tr>
+      </table></div>
+    </div>
+    <div class="card sub-panel" id="s3" hidden>
+      <h3>من الفعل غير الثلاثي</h3>
+      <p>نأتي بالمضارع، ثم <mark>نُبدل حرف المضارعة ميمًا مضمومة</mark> و<mark>نفتح ما قبل الآخر</mark>.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>الماضي</th><th>المضارع</th><th>اسم الفاعل</th><th>اسم المفعول</th></tr>
+        <tr><td>أكرَمَ</td><td>يُكرِمُ</td><td>مُكرِم</td><td><mark>مُكرَم</mark></td></tr>
+        <tr><td>استخرَجَ</td><td>يَستخرِجُ</td><td>مُستخرِج</td><td><mark>مُستخرَج</mark></td></tr>
+        <tr><td>ناقَشَ</td><td>يُناقِشُ</td><td>مُناقِش</td><td><mark>مُناقَش</mark></td></tr>
+        <tr><td>علَّمَ</td><td>يُعلِّمُ</td><td>مُعلِّم</td><td><mark>مُعلَّم</mark></td></tr>
+      </table></div>
+      <p class="note" style="margin-top:8px">الفرق بين الفاعل والمفعول هنا حركة ما قبل الآخر فقط: كسرة للفاعل، وفتحة للمفعول.</p>
+    </div>
+    <div class="card sub-panel" id="s4" hidden>
+      <h3>عمل اسم المفعول</h3>
+      <p>يعمل عمل الفعل المبنيّ للمجهول، فيرفع <mark>نائب فاعل</mark>.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>الجملة</th><th>تقديرها</th><th>الإعراب</th></tr>
+        <tr><td>هذا رجلٌ محمودٌ <b>خُلُقُه</b></td><td>يُحمَدُ خُلُقُه</td><td>خلقُه: نائب فاعل مرفوع</td></tr>
+        <tr><td>المجتهدُ مُكرَمٌ <b>أبوه</b></td><td>يُكرَمُ أبوه</td><td>أبوه: نائب فاعل مرفوع بالواو</td></tr>
+        <tr><td>البطلُ مُشادٌ <b>ببطولته</b></td><td>يُشادُ ببطولته</td><td>ببطولته: جار ومجرور في محل رفع نائب فاعل</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- 2 LAB -->
+  <section class="panel" id="lab" hidden>
+    <h2>مختبر الصياغة</h2>
+    <p class="note">اختر فعلًا لترى خطوات صياغة اسم المفعول منه.</p>
+    <div class="chips" id="labChips"></div>
+    <div class="card" id="labOut"></div>
+  </section>
+
+  <!-- 3 SPOT -->
+  <section class="panel" id="spot" hidden>
+    <h2>استخرج اسم المفعول</h2>
+    <p class="note">اضغط على الكلمة التي هي اسم مفعول في كل جملة.</p>
+    <div class="card" id="spotBox"></div>
+  </section>
+
+  <!-- 4 CHECK -->
+  <section class="panel" id="check" hidden>
+    <h2>الفحص الكتابي</h2>
+    <p class="note">اكتب اسم المفعول من الفعل المعروض. لا حاجة لكتابة الحركات.</p>
+    <div class="card" id="checkBox"></div>
+  </section>
+
+  <!-- 5 QUIZ -->
+  <section class="panel" id="quiz" hidden>
+    <h2>الاختبار النهائي</h2>
+    <p class="note">أسئلة اختيار من متعدد بترتيب عشوائي. التصحيح فوري.</p>
+    <div class="card" id="quizBox"></div>
+  </section>
+
+  <!-- 6 REPORT -->
+  <section class="panel" id="report" hidden>
+    <h2>نتيجتي</h2>
+    <div class="summary" id="sumBox"></div>
+    <div class="card" id="gradeBox"></div>
+    <div class="row"><button class="btn ghost" id="resetAll">إعادة كل الأنشطة</button></div>
+  </section>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const norm=s=>s.replace(/[ً-ْٰـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/\s+/g,"").trim();
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const scores={spot:null,check:null,quiz:null};
+function updateTotal(){let t=0;for(const k in scores){if(scores[k])t+=scores[k].right}$("#totalPts").textContent=t}
+
+/* tabs */
+const tabs=[...document.querySelectorAll("nav.tabs button")];
+function show(id){tabs.forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===id));document.querySelectorAll("section.panel").forEach(p=>p.hidden=p.id!==id);if(id==="report")renderReport()}
+tabs.forEach(b=>b.addEventListener("click",()=>{show(b.dataset.tab);window.scrollTo({top:0})}));
+document.querySelectorAll(".sub-tabs button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".sub-tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  document.querySelectorAll(".sub-panel").forEach(p=>p.hidden=p.id!==b.dataset.sub);
+}));
+
+/* LAB */
+const LAB=[
+ {v:"شَرِبَ",t:"ثلاثي صحيح",a:"مَشْروب",s:["الفعل (شرب) ثلاثي صحيح.","نأتي بوزن مَفْعول: مَ + شْ + رو + ب.","النتيجة على وزن مفعول تمامًا."],ex:"الماءُ مشروبٌ باردًا."},
+ {v:"فَهِمَ",t:"ثلاثي صحيح",a:"مَفْهوم",s:["الفعل (فهم) ثلاثي صحيح.","نضع حروفه في وزن مَفْعول.","مَ + فْ + هو + م."],ex:"الدرسُ مفهومٌ."},
+ {v:"قالَ",t:"أجوف واوي",a:"مَقُول",s:["الفعل (قال) أجوف، أصل ألفه واو (يقول).","على وزن مفعول يصير: مَقْوُوْل.","تُحذف إحدى الواوين فيصير: مَقُول."],ex:"الصدقُ مقولٌ في كلّ مجلس."},
+ {v:"باعَ",t:"أجوف يائي",a:"مَبِيع",s:["الفعل (باع) أجوف، أصل ألفه ياء (يبيع).","على وزن مفعول يصير: مَبْيُوْع.","تُحذف الواو وتُكسر الباء فيصير: مَبِيع."],ex:"البيتُ مبيعٌ."},
+ {v:"دَعا",t:"ناقص واوي",a:"مَدْعُوّ",s:["الفعل (دعا) ناقص، آخره واو (يدعو).","على وزن مفعول يصير: مَدْعُوْو.","تُدغم الواوان فيصير: مَدْعُوّ."],ex:"أنتَ مدعوٌّ إلى الحفل."},
+ {v:"رَمى",t:"ناقص يائي",a:"مَرْمِيّ",s:["الفعل (رمى) ناقص، آخره ياء (يرمي).","على وزن مفعول يصير: مَرْمُوْي.","تُقلب الواو ياءً وتُدغم وتُكسر الميم: مَرْمِيّ."],ex:"الهدفُ مرميٌّ بدقّة."},
+ {v:"أكْرَمَ",t:"رباعي",a:"مُكْرَم",s:["الفعل (أكرم) غير ثلاثي، مضارعه: يُكْرِمُ.","نُبدل الياء ميمًا مضمومة: مُكْرِم.","نفتح ما قبل الآخر (الراء): مُكْرَم."],ex:"الضيفُ مُكرَمٌ."},
+ {v:"اسْتَخْرَجَ",t:"سداسي",a:"مُسْتَخْرَج",s:["الفعل (استخرج) غير ثلاثي، مضارعه: يَسْتَخْرِجُ.","نُبدل الياء ميمًا مضمومة: مُسْتَخْرِج.","نفتح ما قبل الآخر (الراء): مُسْتَخْرَج."],ex:"النفطُ مُستخرَجٌ من أرض العراق."},
+ {v:"انْتَظَرَ",t:"خماسي",a:"مُنْتَظَر",s:["الفعل (انتظر) غير ثلاثي، مضارعه: يَنْتَظِرُ.","نُبدل الياء ميمًا مضمومة: مُنْتَظِر.","نفتح ما قبل الآخر (الظاء): مُنْتَظَر."],ex:"الفرجُ مُنتظَرٌ."},
+ {v:"عَلَّمَ",t:"رباعي",a:"مُعَلَّم",s:["الفعل (علّم) غير ثلاثي، مضارعه: يُعَلِّمُ.","نُبدل الياء ميمًا مضمومة: مُعَلِّم.","نفتح ما قبل الآخر (اللام): مُعَلَّم."],ex:"الطالبُ مُعلَّمٌ آدابَ الحوار."}
+];
+const chipsEl=$("#labChips");
+LAB.forEach((x,i)=>{const b=document.createElement("button");b.className="chip";b.textContent=x.v;b.setAttribute("aria-pressed","false");b.onclick=()=>renderLab(i);chipsEl.appendChild(b)});
+function renderLab(i){
+  [...chipsEl.children].forEach((c,j)=>c.setAttribute("aria-pressed",i===j));
+  const x=LAB[i];
+  $("#labOut").innerHTML=`<h3>${x.v} <span class="tag">${x.t}</span></h3>
+  <ol class="steps">${x.s.map((s,k)=>`<li style="animation-delay:${k*.15}s"><span>${esc(s)}</span></li>`).join("")}</ol>
+  <div class="result" style="margin-top:14px">${x.a}</div>
+  <p class="note" style="margin-top:8px">مثال: ${x.ex}</p>`;
+}
+renderLab(0);
+
+/* SPOT */
+const SPOT=[
+ {w:["الكتابُ","مقروءٌ","بعنايةٍ"],a:1},
+ {w:["الفلّاحُ","زارعٌ","والزرعُ","مزروعٌ"],a:3,why:"(زارع) اسم فاعل، و(مزروع) اسم مفعول."},
+ {w:["الحقُّ","منصورٌ","وإنْ","طال","الزمنُ"],a:1},
+ {w:["﴿ذَٰلِكَ","يَوْمٌ","مَّشْهُودٌ﴾"],a:2,q:true},
+ {w:["يشرحُ","المعلّمُ","الدرسَ","المقرَّرَ"],a:3,why:"(المقرَّر) من (قرّر) غير الثلاثي، بفتح ما قبل الآخر."},
+ {w:["رأيتُ","الفائزَ","مُكرَّمًا","في","الحفلِ"],a:2},
+ {w:["﴿إِنَّ","الْعَهْدَ","كَانَ","مَسْئُولًا﴾"],a:3,q:true},
+ {w:["المجتهدُ","محمودٌ","خُلُقُه"],a:1,why:"و(خلقُه) نائب فاعل لاسم المفعول."}
+];
+let spotI=0,spotR=0,spotLog=[];
+function renderSpot(){
+  const box=$("#spotBox");
+  if(spotI>=SPOT.length){finish("spot",spotR,SPOT.length,spotLog,box,()=>{spotI=0;spotR=0;spotLog=[];renderSpot()});return}
+  const x=SPOT[spotI];
+  box.innerHTML=`${head(spotI,SPOT.length,spotR)}
+  <div class="sentence ${x.q?"quran":""}" style="margin-top:12px">${x.w.map((w,i)=>`<button class="word" data-i="${i}">${w}</button>`).join("")}</div>
+  <div id="spotFb" style="margin-top:12px"></div>`;
+  let done=false;
+  box.querySelectorAll(".word").forEach(b=>b.onclick=()=>{
+    if(done)return;done=true;const i=+b.dataset.i;const ok=i===x.a;
+    if(ok)spotR++;
+    b.classList.add(ok?"ok":"bad");box.querySelector(`[data-i="${x.a}"]`).classList.add("ok");
+    spotLog.push({q:x.w.join(" "),ok,ans:x.w[x.a]});
+    $("#spotFb").innerHTML=`<div class="fb ${ok?"ok":"bad"}">${ok?"أحسنت!":"اسم المفعول هو ("+x.w[x.a]+")."} ${x.why||""}</div>
+    <div class="row" style="margin-top:10px"><button class="btn" id="spotNext">التالي</button></div>`;
+    $("#spotNext").onclick=()=>{spotI++;renderSpot()};$("#spotNext").focus();updateTotal();
+  });
+}
+
+/* CHECK (typed) */
+const CHECK=[
+ {v:"نَصَرَ",a:["منصور"],h:"ثلاثي صحيح ← وزن مفعول"},
+ {v:"صانَ",a:["مصون"],h:"أجوف واوي ← تُحذف إحدى الواوين"},
+ {v:"كالَ",a:["مكيل"],h:"أجوف يائي ← مَبيع"},
+ {v:"رَجا",a:["مرجو","مرجوو"],h:"ناقص واوي ← تُدغم الواوان"},
+ {v:"هَدى",a:["مهدي"],h:"ناقص يائي ← مَرميّ"},
+ {v:"سَأَلَ",a:["مسؤول","مسئول","مسءول"],h:"ثلاثي مهموز ← وزن مفعول"},
+ {v:"ناقَشَ",a:["مناقش"],h:"غير ثلاثي ← يُناقِش"},
+ {v:"اسْتَعْمَلَ",a:["مستعمل"],h:"غير ثلاثي ← يَستعمِل"},
+ {v:"أرْسَلَ",a:["مرسل"],h:"غير ثلاثي ← يُرسِل"},
+ {v:"زارَ",a:["مزور"],h:"أجوف واوي ← يزور"}
+];
+let chkOrder=shuffle(CHECK),chkI=0,chkR=0,chkLog=[];
+function renderCheck(){
+  const box=$("#checkBox");
+  if(chkI>=chkOrder.length){finish("check",chkR,chkOrder.length,chkLog,box,()=>{chkOrder=shuffle(CHECK);chkI=0;chkR=0;chkLog=[];renderCheck()});return}
+  const x=chkOrder[chkI];let tries=0;
+  box.innerHTML=`${head(chkI,chkOrder.length,chkR)}
+  <div style="text-align:center;margin-top:10px"><div class="note">الفعل</div><div class="verb-big">${x.v}</div></div>
+  <form class="row" id="chkForm" style="justify-content:center">
+    <label for="chkIn" class="note">اسم المفعول:</label>
+    <input class="ans" id="chkIn" autocomplete="off" dir="rtl">
+    <button class="btn" type="submit">افحص</button>
+    <button class="btn ghost" type="button" id="hintBtn">تلميح</button>
+  </form>
+  <div id="chkFb" style="margin-top:12px"></div>`;
+  const inp=$("#chkIn");inp.focus();
+  $("#hintBtn").onclick=()=>{$("#chkFb").innerHTML=`<div class="fb" style="background:var(--accent-soft);color:var(--accent)">تلميح: ${x.h}</div>`};
+  $("#chkForm").onsubmit=e=>{
+    e.preventDefault();const val=inp.value;if(!val.trim())return;
+    const ok=x.a.some(a=>norm(a)===norm(val));tries++;
+    if(ok||tries>=2){
+      const first=ok&&tries===1;if(first)chkR++;
+      chkLog.push({q:x.v,ok:first,ans:x.a[0]});
+      $("#chkFb").innerHTML=`<div class="fb ${ok?"ok":"bad"}">${ok?(first?"إجابة صحيحة!":"صحيح في المحاولة الثانية (بلا نقطة)."):"الإجابة الصحيحة: "+x.a[0]}</div>
+      <div class="row" style="margin-top:10px;justify-content:center"><button class="btn" id="chkNext">التالي</button></div>`;
+      inp.disabled=true;$("#chkNext").onclick=()=>{chkI++;renderCheck()};$("#chkNext").focus();updateTotal();
+    }else{
+      $("#chkFb").innerHTML=`<div class="fb bad">ليست صحيحة، حاول مرة أخرى. (${x.h})</div>`;inp.select();
+    }
+  };
+}
+
+/* QUIZ */
+const QUIZ=[
+ {q:"يدلّ اسم المفعول على:",o:["مَن وقع عليه الفعل","مَن قام بالفعل","زمان وقوع الفعل","مكان وقوع الفعل"]},
+ {q:"اسم المفعول من الفعل (فَهِمَ):",o:["مَفهوم","فاهِم","مُفهِم","فَهيم"]},
+ {q:"اسم المفعول من الفعل (قالَ):",o:["مَقُول","مَقْوُول","قائِل","مَقال"]},
+ {q:"اسم المفعول من الفعل (رَمى):",o:["مَرْمِيّ","مَرْمُوّ","رامٍ","مَرْمى"]},
+ {q:"اسم المفعول من الفعل (دَعا):",o:["مَدْعُوّ","مَدْعِيّ","داعٍ","مَدْعى"]},
+ {q:"اسم المفعول من الفعل (باعَ):",o:["مَبِيع","مَبْيُوع","بائِع","مُباع"]},
+ {q:"اسم المفعول من الفعل (استخدَمَ):",o:["مُستخدَم","مُستخدِم","مَخدوم","استخدام"]},
+ {q:"اسم المفعول من الفعل (علَّمَ):",o:["مُعلَّم","مُعلِّم","معلوم","تعليم"]},
+ {q:"أيّ الكلمات الآتية اسم مفعول؟",o:["مُنتظَر","مُنتظِر","انتظار","ينتظر"]},
+ {q:"يُصاغ اسم المفعول من الثلاثي على وزن:",o:["مَفْعول","فاعِل","مُفْعَل","مِفْعال"]},
+ {q:"يُصاغ اسم المفعول من غير الثلاثي على وزن مضارعه بإبدال حرف المضارعة ميمًا مضمومة و:",o:["فتح ما قبل الآخر","كسر ما قبل الآخر","ضمّ ما قبل الآخر","تسكين الآخر"]},
+ {q:"في جملة «المجتهدُ مُكرَمٌ أبوه» تُعرب (أبوه):",o:["نائب فاعل مرفوع بالواو","فاعل مرفوع بالواو","مبتدأ مرفوع","خبر مرفوع"]},
+ {q:"اسم المفعول في قوله تعالى ﴿وَكَانَ أَمْرُ اللَّهِ مَفْعُولًا﴾:",o:["مفعولًا","أمر","الله","كان"]},
+ {q:"يعمل اسم المفعول عمل:",o:["الفعل المبنيّ للمجهول","الفعل المبنيّ للمعلوم","الحرف","اسم الفاعل"]},
+ {q:"الكلمة التي ليست اسم مفعول:",o:["ناصِر","منصور","مُكرَم","مَبيع"]}
+];
+let qOrder,qI,qR,qLog;
+function resetQuiz(){qOrder=shuffle(QUIZ).map(x=>({q:x.q,a:x.o[0],o:shuffle(x.o)}));qI=0;qR=0;qLog=[]}
+resetQuiz();
+function renderQuiz(){
+  const box=$("#quizBox");
+  if(qI>=qOrder.length){finish("quiz",qR,qOrder.length,qLog,box,()=>{resetQuiz();renderQuiz()});return}
+  const x=qOrder[qI];
+  box.innerHTML=`${head(qI,qOrder.length,qR)}
+  <p style="font-size:21px;font-weight:700;margin-top:12px">${x.q}</p>
+  <div class="opts" style="margin-top:12px">${x.o.map(o=>`<button class="opt">${o}</button>`).join("")}</div>
+  <div id="qFb" style="margin-top:12px"></div>`;
+  const btns=[...box.querySelectorAll(".opt")];
+  btns.forEach(b=>b.onclick=()=>{
+    const ok=b.textContent===x.a;if(ok)qR++;
+    btns.forEach(o=>{o.disabled=true;if(o.textContent===x.a)o.classList.add("ok")});
+    if(!ok)b.classList.add("bad");
+    qLog.push({q:x.q,ok,ans:x.a});
+    $("#qFb").innerHTML=`<div class="fb ${ok?"ok":"bad"}">${ok?"إجابة صحيحة!":"الإجابة الصحيحة: "+x.a}</div>
+    <div class="row" style="margin-top:10px"><button class="btn" id="qNext">${qI+1<qOrder.length?"السؤال التالي":"عرض النتيجة"}</button></div>`;
+    $("#qNext").onclick=()=>{qI++;renderQuiz()};$("#qNext").focus();updateTotal();
+  });
+}
+
+/* shared */
+function head(i,n,r){return `<div class="qhead"><span>السؤال ${i+1} من ${n}</span><div class="bar"><i style="width:${i/n*100}%"></i></div><span>صحيح: ${r}</span></div>`}
+function gradeOf(p){if(p>=90)return["امتياز","var(--ok)"];if(p>=80)return["جيد جدًا","var(--ok)"];if(p>=70)return["جيد","var(--accent)"];if(p>=60)return["متوسط","var(--accent)"];if(p>=50)return["مقبول","var(--hl)"];return["يحتاج إلى مراجعة","var(--bad)"]}
+function ring(p,color){const r=62,c=2*Math.PI*r;return `<svg class="ring" viewBox="0 0 150 150" role="img" aria-label="${p}%"><circle cx="75" cy="75" r="${r}" fill="none" stroke="var(--line)" stroke-width="12"/><circle cx="75" cy="75" r="${r}" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 75 75)"/><text x="75" y="84" text-anchor="middle" font-size="30" font-weight="800" fill="var(--ink)" font-family="Noto Kufi Arabic, sans-serif">${p}%</text></svg>`}
+function finish(key,r,n,log,box,again){
+  scores[key]={right:r,total:n,log};updateTotal();
+  const p=Math.round(r/n*100),[g,c]=gradeOf(p);
+  box.innerHTML=`<div class="final">${ring(p,c)}<div class="grade" style="color:${c}">${g}</div><p>${r} إجابة صحيحة من ${n}</p>
+  <div class="review">${log.map(l=>`<div class="${l.ok?"ok":"bad"}">${l.ok?"✓":"✗"} ${esc(l.q)} ← <b>${esc(l.ans)}</b></div>`).join("")}</div>
+  <div class="row" style="justify-content:center"><button class="btn" id="again_${key}">أعد النشاط</button><button class="btn ghost" id="rep_${key}">النتيجة الكلية</button></div></div>`;
+  $("#again_"+key).onclick=again;$("#rep_"+key).onclick=()=>show("report");
+}
+const NAMES={spot:"استخرج",check:"الفحص الكتابي",quiz:"الاختبار"};
+function renderReport(){
+  let R=0,T=0;
+  $("#sumBox").innerHTML=Object.keys(NAMES).map(k=>{const s=scores[k];if(s){R+=s.right;T+=s.total}
+    return `<div class="card"><div class="k">${NAMES[k]}</div><div class="v">${s?s.right+" / "+s.total:"—"}</div></div>`}).join("");
+  if(!T){$("#gradeBox").innerHTML=`<p class="note">لم يُكمَل أيّ نشاط بعد. أكمل أنشطة (استخرج) و(الفحص الكتابي) و(الاختبار) لتظهر درجتك من 100 هنا.</p>`;return}
+  const p=Math.round(R/T*100),[g,c]=gradeOf(p);
+  $("#gradeBox").innerHTML=`<div class="final">${ring(p,c)}<div class="grade" style="color:${c}">الدرجة: ${p} من 100 · ${g}</div>
+  <p class="note">${Object.keys(NAMES).filter(k=>!scores[k]).length?"تُحسب الدرجة من الأنشطة المكتملة فقط.":"أكملت جميع الأنشطة."}</p></div>`;
+}
+$("#resetAll").onclick=()=>{for(const k in scores)scores[k]=null;spotI=0;spotR=0;spotLog=[];chkOrder=shuffle(CHECK);chkI=0;chkR=0;chkLog=[];resetQuiz();renderSpot();renderCheck();renderQuiz();updateTotal();renderReport()};
+
+renderSpot();renderCheck();renderQuiz();
+})();
+</script>
+
+</body></html>
